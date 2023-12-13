@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
+using Microsoft.Extensions.Configuration;
 namespace WebApplication15.Data
 {
     public class AppDbContext : DbContext
@@ -17,6 +17,7 @@ namespace WebApplication15.Data
             options.UseNpgsql(Configuration.GetConnectionString("WebApiDatabase"));
         }
 
-        public DbSet<Login> Logins { get; set; }
+        public DbSet<User> Users { get; set; }
+        public DbSet<Admin> Admins { get; set; }
     }
 }

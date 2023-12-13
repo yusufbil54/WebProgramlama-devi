@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApplication15.Data;
 using WebApplication15.Models;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace WebApplication15.Controllers
@@ -14,6 +13,12 @@ namespace WebApplication15.Controllers
         {
             _appDbContext = appDbContext;
         }
+        [HttpGet]
+        public IActionResult AdminPage()
+        {
+            return View();
+        }
+
 
         [HttpGet]
         public IActionResult LoginPage()
@@ -26,7 +31,7 @@ namespace WebApplication15.Controllers
             var userName = model.UserName;
             var passWord = model.PassWord;
 
-            var user = await _appDbContext.Logins.FirstOrDefaultAsync(u => u.UserName == userName&u.Password==passWord);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName&u.Password==passWord);
 
             if (user != null)
             {
@@ -62,15 +67,16 @@ namespace WebApplication15.Controllers
                 {
 
 
-                    var user = new Login()
+                    var user = new User()
                     {
                         Id = addUserRequest.GetHashCode(), // Bu genellikle bir GUID oluşturmak yerine kullanılır. 
                         UserName = addUserRequest.UserName,
+                        UserSurname=addUserRequest.UserSurname,
                         Password = addUserRequest.PassWord
                     };
 
                     // _appDbContext üzerinden veritabanına kullanıcıyı ekleyin
-                    await _appDbContext.Logins.AddAsync(user);
+                    await _appDbContext.Users.AddAsync(user);
                     await _appDbContext.SaveChangesAsync();
 
                     // Başka bir işlem yapılabilir, örneğin kullanıcıyı başka bir sayfaya yönlendirebilirsiniz

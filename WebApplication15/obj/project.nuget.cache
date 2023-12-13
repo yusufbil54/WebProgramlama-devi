@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "QSZBT6nsSJdbZT4PguncDfYZ/8XjGpFHC8qVqKLEFcrJ1WbGpuSrcjBkd7u58ZuHnUCOYypkYK3sMfdg5ef7FQ==",
+  "dgSpecHash": "h6v/i1Rg94AK4oEX10LQrAmmnrcN3cPFnaFncO/pJHxcv7dqtS06dDAG1aPmzfsq6awXI/ZBIZwUYuY5Dx7Q5A==",
   "success": true,
-  "projectFilePath": "C:\\Users\\yusuf\\source\\repos\\WebApplication15\\WebApplication15\\WebApplication15.csproj",
+  "projectFilePath": "C:\\Users\\yusuf\\OneDrive\\Masaüstü\\WebApplication15\\WebApplication15\\WebApplication15.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\yusuf\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\yusuf\\.nuget\\packages\\microsoft.entityframeworkcore\\6.0.23\\microsoft.entityframeworkcore.6.0.23.nupkg.sha512",

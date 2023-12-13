@@ -26,6 +26,9 @@
   <div class="register-link">
         <p>Dont have an account?<a asp-controller="Login" asp-action="Add"> go to register page</a></p>
    </div>
+   <div class="register-link">
+        <p>Are you admin ?<a asp-controller="Login" asp-action="AdminPage"> Admin Sign in</a></p>
+   </div>
             @if (!string.IsNullOrEmpty(ViewData["Error2"] as string))
             {
               <p class="error">@ViewData["Error2"]</p>

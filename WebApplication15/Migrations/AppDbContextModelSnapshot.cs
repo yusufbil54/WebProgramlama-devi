@@ -21,7 +21,28 @@ namespace WebApplication15.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("WebApplication15.Data.Login", b =>
+            modelBuilder.Entity("WebApplication15.Data.Admin", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Admins");
+                });
+
+            modelBuilder.Entity("WebApplication15.Data.User", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,9 +58,13 @@ namespace WebApplication15.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("UserSurname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Logins");
+                    b.ToTable("Users");
                 });
 #pragma warning restore 612, 618
         }
