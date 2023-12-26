@@ -2,6 +2,9 @@
 using WebApplication15.Data;
 using WebApplication15.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 
 namespace WebApplication15.Controllers
 {
@@ -15,20 +18,29 @@ namespace WebApplication15.Controllers
         }
         [HttpGet]
         public IActionResult AdminPage()
-        {
+        {   
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> AdminPage(AdminPageViewModel model)
-        {
-            var email=model.Email;
-            var passwordAdmin=model.PassWord;
-            var user = await _appDbContext.Admins.FirstOrDefaultAsync(u=>u.Email==email&u.Password==passwordAdmin);
-            if (user != null)
-            {
-                // Kullanıcı adı bulundu, işlemlerinizi gerçekleştirin...
 
-                return RedirectToAction("Index", "AdminHomePage"); // Örneğin, başka bir sayfaya yönlendirme
+        public async Task<IActionResult> AdminPage(LoginPageViewModel model)
+        {
+            var email=model.UserName;
+            var passwordAdmin=model.PassWord;
+     
+            var admin = await _appDbContext.Users.FirstOrDefaultAsync(u=>u.UserName==email&u.Password==passwordAdmin&u.Role=="Admin");
+            if (admin != null)
+            {
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, email),
+                };
+
+                claims.Add(new Claim(ClaimTypes.Role, admin.Role));
+                var useridentity = new ClaimsIdentity(claims, "Login");
+                ClaimsPrincipal principal = new ClaimsPrincipal(useridentity);
+                await HttpContext.SignInAsync(principal);
+                return RedirectToAction("SeferDuzenle", "Ucak"); // Örneğin, başka bir sayfaya yönlendirme
             }
             else
             {
@@ -44,18 +56,25 @@ namespace WebApplication15.Controllers
         {
             return View();
         }
-        [HttpPost]
+        
         public async Task<IActionResult> LoginPage(LoginPageViewModel model)
         {
             var userName = model.UserName;
             var passWord = model.PassWord;
 
-            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName&u.Password==passWord);
+            var user = await _appDbContext.Users.FirstOrDefaultAsync(u => u.UserName == userName&u.Password==passWord&u.Role=="User");
 
             if (user != null)
             {
-                // Kullanıcı adı bulundu, işlemlerinizi gerçekleştirin...
-
+                HttpContext.Session.SetInt32("UserId",user.Id);
+                var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.NameIdentifier, userName),
+                };
+                claims.Add(new Claim(ClaimTypes.Role, user.Role));
+                var useridentity = new ClaimsIdentity(claims, "Login");
+                ClaimsPrincipal principal = new ClaimsPrincipal(useridentity);
+                await HttpContext.SignInAsync(principal);
                 return RedirectToAction("Index", "Home"); // Örneğin, başka bir sayfaya yönlendirme
             }
             else
@@ -88,7 +107,8 @@ namespace WebApplication15.Controllers
 
 
                     var user = new User()
-                    {
+                    {   Name=addUserRequest.Name,
+                        Role=addUserRequest.Role,
                         Id = addUserRequest.GetHashCode(), // Bu genellikle bir GUID oluşturmak yerine kullanılır. 
                         UserName = addUserRequest.UserName,
                         UserSurname=addUserRequest.UserSurname,
@@ -145,5 +165,24 @@ namespace WebApplication15.Controllers
             }
             return RedirectToAction("Index", "AdminHomePage");
         }
+
+        public IActionResult Logout()
+        {
+            // Kullanıcıyı çıkış yapmaya zorla
+            HttpContext.SignOutAsync();
+
+            // İsteği başka bir sayfaya yönlendir (isteğe bağlı)
+            return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult AdminLogout()
+        {
+            // Kullanıcıyı çıkış yapmaya zorla
+            HttpContext.SignOutAsync();
+
+            // İsteği başka bir sayfaya yönlendir (isteğe bağlı)
+            return RedirectToAction("Index", "Home");
+        }
+
     }
 }

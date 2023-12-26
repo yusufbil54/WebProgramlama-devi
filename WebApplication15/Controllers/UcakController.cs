@@ -2,6 +2,8 @@
 using WebApplication15.Models;
 using Microsoft.EntityFrameworkCore;
 using WebApplication15.Data;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApplication15.Controllers
 {
@@ -10,21 +12,25 @@ namespace WebApplication15.Controllers
     public class UcakController : Controller
     {
         private readonly AppDbUcakContext _appDbUcakContext;
-
         public UcakController(AppDbUcakContext appDbUcakContext)
         {
             _appDbUcakContext = appDbUcakContext;
         }
         [HttpGet]
 
+        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> UcakEkle()
-        {
-            //var Flys = await _appDbUcakContext.FlyNames.ToListAsync();
-            return View();
+        {      return View();
+
         }
         [HttpPost]
         public async Task<IActionResult> UcakEkle(SeferEkleViewModel model)
         {
+            var Flys = await _appDbUcakContext.Voyages.FirstOrDefaultAsync(x => x.AirPlaneName == model.AirPlaneName);
+            if(Flys != null)
+            {
+                return RedirectToAction("SeferDuzenle", "Ucak");
+            }
             var Voyage = new Voyage
             {
                 VoyageId = model.VoyageId.GetHashCode(),
@@ -45,13 +51,15 @@ namespace WebApplication15.Controllers
 
             return RedirectToAction("UcakEkle", "Ucak");
         }
-
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SeferDuzenle(SeferEkleViewModel model)
-        {
+        {   
+
             var Flys = await _appDbUcakContext.Voyages.ToListAsync();
             return View(Flys);
         }
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> SeferGuncelle(int id)
         {
             var Flys = await _appDbUcakContext.Voyages.FirstOrDefaultAsync(x => x.VoyageId == id);
@@ -62,7 +70,7 @@ namespace WebApplication15.Controllers
                 {
                   VoyageId=Flys.VoyageId,
                   From = Flys.From,
-                  FromDate = Flys.FromDate,
+                  FromDate = Flys.FromDate.ToUniversalTime(),
                   To = Flys.To,
                   AirPlaneName = Flys.AirPlaneName,
                   capacity=Flys.capacity
@@ -91,6 +99,18 @@ namespace WebApplication15.Controllers
 
                 return RedirectToAction("SeferDuzenle", "Ucak");
 
+            }
+            return RedirectToAction("SeferDuzenle", "Ucak");
+        }
+        [HttpPost]
+        public async Task<IActionResult>DeleteVoyage(SeferUpdateViewModel model)
+        {
+            var Flys = await _appDbUcakContext.Voyages.FindAsync(model.VoyageId);
+            if(Flys!=null)
+            {
+                _appDbUcakContext.Voyages.Remove(Flys);
+                await _appDbUcakContext.SaveChangesAsync();
+                return RedirectToAction("SeferDuzenle", "Ucak");
             }
             return RedirectToAction("SeferDuzenle", "Ucak");
         }

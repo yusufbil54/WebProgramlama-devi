@@ -20,14 +20,8 @@
 
 </head>
 <body>
-<!-- Preloader -->
 
-<!-- Progress scroll totop -->
-<div class="progress-wrap cursor-pointer">
-    <svg class="progress-circle svg-content" width="100%" height="100%" viewBox="-1 -1 102 102">
-        <path d="M50,1 a49,49 0 0,1 0,98 a49,49 0 0,1 0,-98"/>
-    </svg>
-</div>
+
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar2" >
     <div class="container">
@@ -44,10 +38,11 @@
         <div class="collapse navbar-collapse" id="navbar">
             <ul class="navbar-nav ms-auto">
 
-
+                <li class="nav-item "> <a class="nav-link " asp-controller="Home" asp-action="Index">Home</a></li>
                 <li class="nav-item"><a class="nav-link @ucakEkleActive " asp-controller="Ucak" asp-action="UcakEkle">Sefer ekle</a></li>
                 <li class="nav-item"><a class="nav-link @IndexActive " asp-controller="AdminHomePage" asp-action="Index" >Users</a></li>
                 <li class="nav-item"><a class="nav-link @IndexActive " asp-controller="Ucak" asp-action="SeferDuzenle" >Sefer Düzenle</a></li>
+                <li class="nav-item"><a class="nav-link @IndexActive " asp-controller="Login" asp-action="AdminLogout" >Çıkış yap</a></li>
             </ul>
         </div>
     </div>
